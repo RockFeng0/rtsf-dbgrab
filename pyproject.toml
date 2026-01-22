@@ -1,0 +1,19 @@
+[project]
+name = "rtsf-dbgrab"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "jaydebeapi>=1.2.3",
+    "pandas>=3.0.0",
+    "rtsf>=3.0.2",
+    "setuptools>=80.10.1",
+    "sqlalchemy>=2.0.46",
+    "tqdm>=4.67.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]

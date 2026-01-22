@@ -1,0 +1,14 @@
+# 示例表配置
+
+tables:
+  SCHEMA.TABLE_NAME:
+    db_alias: "数据库别名"
+    desc: "表描述"
+    filter: "过滤字段"
+    sql: |
+      SELECT  column1 AS column1
+             ,column2 AS column2
+      FROM SCHEMA.TABLE_NAME
+      WHERE {filter} >= '{start_date}'
+      AND {filter} <= '{end_date}'
+      order by column1

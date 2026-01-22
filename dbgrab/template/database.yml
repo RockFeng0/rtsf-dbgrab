@@ -1,0 +1,38 @@
+# 数据库引擎配置
+
+# 基本路径配置
+paths:
+  work_path: /xx/xx
+  fetch_log_path: /xx/xx/logs
+  fetch_file_path: /xx/xx/files
+
+# 数据库连接配置
+databases:
+  # PostgreSQL 配置
+  - alias: pg_engine
+    type: pg
+    uri: postgresql://username:password@host:port/xx_database
+
+  # Oracle 配置
+  - alias: oracle_engine
+    type: oracle
+    uri: oracle://username:password@host:port/?service_name=xx_database
+
+  # Mysql 配置
+  - alias: mysql_engine
+    type: mysql
+    uri: mysql+pymysql://username:password@host:port/xx_database
+
+  # SQLite 配置
+  - alias: sqlite_engine
+    type: sqlite
+    uri: sqlite:///d:\\xxx\\xx\\xx.db
+
+  # OceanBase 配置
+  - alias: ob_engine
+    type: oceanbase
+    jdbc: ""
+    username: ""
+    password: ""
+    driver: ""
+    jar: ""
