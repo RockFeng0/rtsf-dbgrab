@@ -1,7 +1,7 @@
 #! python3
 # -*- encoding: utf-8 -*-
 from functools import wraps
-from dbgrab.dt_factory import PgSqlExtractor, OracleSqlExtractor
+from dbgrab.extractor.dt_factory import PgSqlExtractor, OracleSqlExtractor
 
 
 class DataExtractor(object):

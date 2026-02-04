@@ -2,14 +2,14 @@
 # -*- encoding: utf-8 -*-
 import re
 from datetime import datetime, timedelta
-from dbgrab.dt_factory import (
+from dbgrab import (
     check_data,
     logger,
     get_month_start_end_dates,
     get_year_start_end_dates,
     get_day_dates,
+    DataExtractor,
 )
-from dbgrab.dt_extractor import DataExtractor
 from dbgrab.cons import j_conf
 
 
@@ -18,25 +18,29 @@ class DataBaseFetcher(object):
     数据库数据抓取器，基于数据库提取器和SQL模板文件抓取数据，并保存到csv
     """
 
-    def __init__(self, db_alias=None, chunk_size=200000, is_iter=False, db_cfg_file='database.yml', sql_cfg_file='tables.yml'):
+    def __init__(self, db_alias=None, chunk_size=200000, is_iter=False, env_file=None, sql_cfg_file='tables.yml'):
         """
-        :param db_alias: 数据库别名，从database.yml配置文件中获取，如: oceanbase, oracle, postgres
+        :param db_alias: 数据库标识/别名，从配置文件中获取，区分大小写，如: MAIN、REPLICA、USER
         :param chunk_size: 数据抽取的批次大小，默认200000
         :param is_iter: 是否以迭代器模式抽取数据，默认False， 该参数已失效
-        :param db_cfg_file: 数据库配置文件路径，默认database.yml
+        :param env_file: 环境配置文件路径，默认None
         :param sql_cfg_file: SQL模板配置文件路径，默认tables.yml
         :return:            
         """
         
-        # 读取yaml配置并初始化引擎
-        j_conf.init_engines(db_cfg_file=db_cfg_file)
+        # 读取配置并初始化引擎
+        j_conf.init_engines(env_file=env_file)
 
         # 根据配置的别名，获取引擎
-        self._engine = j_conf.ENGINE_MAP.get(db_alias)
+        if not j_conf.ENGINE_MANAGER:
+            raise ValueError('引擎管理器未初始化')
+        
+        self._engine = j_conf.ENGINE_MANAGER.get_engine(db_alias)
         if not self._engine:
-            raise ValueError(f'未知的数据库别名, 已配置的: {j_conf.ENGINE_MAP}')
+            engines = j_conf.ENGINE_MANAGER.list_engines()
+            raise ValueError(f'未知的数据库别名, 已配置的: {list(engines.keys())}')
 
-        # 读取yaml配置并初始化SQL预清洗的模板
+        # 读取配置并初始化SQL预清洗的模板
         j_conf.init_sql_template(sql_cfg_file=sql_cfg_file)
         if not j_conf.SQL_CONFIG:
             print(f"Waring: 未配置数据提取模板 : {j_conf.SQL_CONFIG}")
