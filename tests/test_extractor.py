@@ -4,7 +4,7 @@
 import pytest
 from dbgrab import get_engine_manager, check_data, DataExtractor
 
-env_file = ".env.dev"
+env_file= "cmft_conf/.env.cmft"
 manager = get_engine_manager(env_file)
 
 def test_extractor_mysql():
