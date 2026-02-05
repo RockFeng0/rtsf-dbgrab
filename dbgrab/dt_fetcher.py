@@ -2,6 +2,7 @@
 # -*- encoding: utf-8 -*-
 import re
 from datetime import datetime, timedelta
+from typing import Optional
 from dbgrab import (
     check_data,
     logger,
@@ -10,7 +11,7 @@ from dbgrab import (
     get_day_dates,
     DataExtractor,
 )
-from dbgrab.cons import j_conf
+from dbgrab.cons import JayDeBeConfig
 
 
 class DataBaseFetcher(object):
@@ -18,39 +19,31 @@ class DataBaseFetcher(object):
     数据库数据抓取器，基于数据库提取器和SQL模板文件抓取数据，并保存到csv
     """
 
-    def __init__(self, db_alias=None, chunk_size=200000, is_iter=False, env_file=None, sql_cfg_file='tables.yml'):
+    def __init__(self, db_alias=None, chunk_size=200000, is_iter=False):
         """
         :param db_alias: 数据库标识/别名，从配置文件中获取，区分大小写，如: MAIN、REPLICA、USER
         :param chunk_size: 数据抽取的批次大小，默认200000
         :param is_iter: 是否以迭代器模式抽取数据，默认False， 该参数已失效
-        :param env_file: 环境配置文件路径，默认None
-        :param sql_cfg_file: SQL模板配置文件路径，默认tables.yml
-        :return:            
+        :return:
         """
-        
-        # 读取配置并初始化引擎
-        j_conf.init_engines(env_file=env_file)
-
-        # 根据配置的别名，获取引擎
-        if not j_conf.ENGINE_MANAGER:
-            raise ValueError('引擎管理器未初始化')
-        
-        self._engine = j_conf.ENGINE_MANAGER.get_engine(db_alias)
-        if not self._engine:
-            engines = j_conf.ENGINE_MANAGER.list_engines()
-            raise ValueError(f'未知的数据库别名, 已配置的: {list(engines.keys())}')
-
-        # 读取配置并初始化SQL预清洗的模板
-        j_conf.init_sql_template(sql_cfg_file=sql_cfg_file)
-        if not j_conf.SQL_CONFIG:
-            print(f"Waring: 未配置数据提取模板 : {j_conf.SQL_CONFIG}")
-
-        # 设置引擎和提取文件存储路径，初始化抽取/提取器
-        self._dt_extractor = DataExtractor(self._engine, j_conf.FETCH_FILE_PATH)
-
         self._db_alias = db_alias
         self._chunk_size = chunk_size
         self._is_iter = is_iter
+
+
+    def with_config(self, env_file=".env", sql_file="sql.yml"):
+        self._jdbc = JayDeBeConfig(env_file, sql_file)
+
+        # 获取引擎
+        self._engine = self._jdbc.manager.get_engine(self._db_alias)
+
+        # 获取SQL
+        self._sql = self._jdbc.sql_config
+
+        # 初始化抽取/提取器对象
+        self._dt_extractor = DataExtractor(self._engine, self._jdbc.db_config.FILE_PATH)
+
+        return self
 
     @property
     def extractor(self):
@@ -88,9 +81,9 @@ class DataBaseFetcher(object):
             elif start_date is None or end_date is None:
                 raise ValueError("start_date or end_date is None")
 
-            print(f"{j_conf.SQL_CONFIG['tables'][table_name]['desc']}")
+            print(f"{self._sql['tables'][table_name]['desc']}")
 
-            fetch_sql = j_conf.SQL_CONFIG["tables"][table_name]['sql'].format(start_date=start_date, end_date=end_date)
+            fetch_sql = self._sql["tables"][table_name]['sql'].format(start_date=start_date, end_date=end_date)
 
             count_query = re.sub(r"SELECT.+FROM", "SELECT count(1) FROM", fetch_sql, flags=re.DOTALL | re.I)
             count_sql = re.sub(r"ORDER BY.*$", "", count_query, flags=re.DOTALL | re.I)
@@ -136,10 +129,10 @@ class DataBaseFetcher(object):
 
             logger.debug(f'{mode} start - end : {s_e_dates}')
 
-            print(f"{j_conf.SQL_CONFIG['tables'][table_name]['desc']}")
-            logger.debug(f"{j_conf.SQL_CONFIG['tables'][table_name]['desc']}")
+            print(f"{self._sql['tables'][table_name]['desc']}")
+            logger.debug(f"{self._sql['tables'][table_name]['desc']}")
 
-            _filter = j_conf.SQL_CONFIG["tables"][table_name]['filter']
+            _filter = self._sql["tables"][table_name]['filter']
             if _filter is None:
                 raise Exception("No datetime filter.")
 
@@ -147,7 +140,7 @@ class DataBaseFetcher(object):
             logger.debug(f"Datetime during: {start_date} - {end_date}\n-")
 
             for _start_date, _end_date in s_e_dates:
-                fetch_sql = j_conf.SQL_CONFIG["tables"][table_name]['sql'].format(start_date=_start_date, end_date=_end_date)
+                fetch_sql = self._sql["tables"][table_name]['sql'].format(start_date=_start_date, end_date=_end_date)
 
                 # count_sql = f"select count(1) from {table_name} where {_filter} >= '{_start_date}' and {_filter} <='{_end_date}'"
                 count_query = re.sub(r"SELECT.+FROM", "SELECT count(1) FROM", fetch_sql, flags=re.DOTALL | re.I)
