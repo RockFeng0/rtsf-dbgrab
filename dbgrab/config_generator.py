@@ -28,24 +28,13 @@ class ConfigGenerator:
         with open(template_path, 'r', encoding='utf-8') as f:
             template_content = f.read()
 
-        # 确定输出路径
         if output_path is None:
-            # 保存到当前目录
             output_path = os.path.join(os.getcwd(), template_name)
 
         # 写入输出文件
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(template_content)
-
-    def get_database_template(self, output_path: str = None) -> None:
-        """
-        获取database.yaml模板并保存到当前目录
-
-        Args:
-            output_path: 输出文件路径，如果为None则保存到当前目录
-        """
-        self.get_template('database.yml', output_path)
 
     def get_tables_template(self, output_path: str = None) -> None:
         """
@@ -59,9 +48,6 @@ class ConfigGenerator:
 if __name__ == '__main__':
     # 初始化配置生成器
     generator = ConfigGenerator()
-
-    # 获取database.yaml模板到当前目录
-    generator.get_database_template("../temp/dev_database.yml")
 
     # 获取tables.yaml模板到当前目录
     generator.get_tables_template("../temp/dev_tables.yml")
