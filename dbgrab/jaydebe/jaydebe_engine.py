@@ -24,7 +24,7 @@ class JayDeBeEngine(object):
                 self._jdbc_driver_name, self._jdbc_url, [self._jdbc_user, self._jdbc_password], self._jdbc_jar
                 )
         except JVMNotFoundException as e:
-            raise JVMNotFoundException("jpype.startJVM启动失败，请检查JAVA_HOME配置. 如:os.environ['JAVA_HOME']='~/anaconda3/envs/dcapp'")
+            raise JVMNotFoundException(f"{e}\njpype.startJVM启动失败，请检查JAVA_HOME配置. 如:os.environ['JAVA_HOME']='~/anaconda3/envs/dcapp'")
         return conn
 
     def raw_connection(self):
