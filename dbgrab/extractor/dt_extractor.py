@@ -1,7 +1,11 @@
 #! python3
 # -*- encoding: utf-8 -*-
 from functools import wraps
-from dbgrab.extractor.dt_factory import PgSqlExtractor, OracleSqlExtractor
+from dbgrab.extractor.dt_factory import (
+    SqlExtractor,
+    PgSqlExtractor,
+    OracleSqlExtractor
+)
 
 
 class DataExtractor(object):
@@ -30,7 +34,8 @@ class DataExtractor(object):
             extractor = OracleSqlExtractor(conn, fp)
 
         else:
-            raise ValueError("Unknown database type")
+            extractor = SqlExtractor(self._engine, fp)
+
         return extractor
 
     def fetch_db_iter(self, chunk_size):
