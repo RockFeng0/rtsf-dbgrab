@@ -107,10 +107,10 @@ class DatabaseEngineManager:
                 self._engines[db_name] = engine
                 self._sessionmakers[db_name] = sessionmaker(bind=engine)
 
-                logger.info(f"✅ 数据库引擎 '{db_name}' 初始化成功")
+                logger.info(f"数据库引擎 '{db_name}' 初始化成功")
 
             except Exception as e:
-                logger.error(f"❌ 数据库引擎 '{db_name}' 初始化失败: {e}")
+                logger.error(f"数据库引擎 '{db_name}' 初始化失败: {e}")
                 raise EngineError(f"数据库 {db_name} 初始化失败: {e}")
 
         for db_name, db_config in self._config.OCEANBASES.items():
@@ -127,10 +127,10 @@ class DatabaseEngineManager:
                 self._engines[db_name] = engine
                 self._sessionmakers[db_name] = sessionmaker(bind=engine)
 
-                logger.info(f"✅ 数据库引擎 '{db_name}' 初始化成功")
+                logger.info(f"数据库引擎 '{db_name}' 初始化成功")
 
             except Exception as e:
-                logger.error(f"❌ 数据库引擎 '{db_name}' 初始化失败: {e}")
+                logger.error(f"数据库引擎 '{db_name}' 初始化失败: {e}")
                 raise EngineError(f"数据库 {db_name} 初始化失败: {e}")
 
     def _get_sessionmaker(self, db_name: str) -> Any:
