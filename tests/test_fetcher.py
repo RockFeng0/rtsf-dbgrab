@@ -5,14 +5,16 @@ import pytest
 from dbgrab import log
 from dbgrab.dt_fetcher import DataBaseFetcher
 
+env_file= "cmft_conf/.env.cmft"
+sql_file= "cmft_conf/tables.yml"
+log_file = "temp/mytest.log"
 
 def test_grab_mysql():
     # 设置日志
-    log_file = "mytest.log"
     log.to_file(log_file)
     print("log: %s" % log_file)
 
-    dbf = DataBaseFetcher("CREDIBLE").with_config(env_file=".env.dev", sql_file="tables.yml")  # oracle
+    dbf = DataBaseFetcher("CREDIBLE").with_config(env_file, sql_file)  # oracle
 
     # T+1
     print(dbf.to_csv(table_name='credible_db.fetcher_task_record', T_1=True))
@@ -27,12 +29,11 @@ def test_grab_mysql():
     print("✓ 数据抓取器（DataBaseFetcher） 迭代抽取抓取功能，测试成功")
 
 def test_grab_oceanbase():
-    # 设置日志
-    log_file = "mytest_ob.log"
+    # 设置日志 - oceanbase 库 需要安装java jdk,并配置JAVA_HOME
     log.to_file(log_file)
     print("log: %s" % log_file)
 
-    dbf = DataBaseFetcher("TRADE").with_config(env_file=".env.dev", sql_file="tables.yml") # oceanbase
+    dbf = DataBaseFetcher("TRADE").with_config(env_file, sql_file) # oceanbase
 
     # T+1
     print(dbf.to_csv(table_name='TRADEDBADM.WTAORDLT', T_1=True))
