@@ -1,0 +1,21 @@
+# 示例表配置
+
+tables:
+  credible_db.fetcher_task_record:
+    db_alias: "alias"
+    desc: "desc"
+    filter: "filterfilter"
+    sql: |
+      SELECT * FROM credible_db.fetcher_task_record t 
+      where DATE(t.record_dt) >= '{start_date}'
+      and DATE(t.record_dt) <= '{end_date}'
+  TRADEDBADM.WTAORDLT:
+    db_alias: "alias"
+    desc: "desc"
+    filter: "filterfilter"
+    sql: |
+      SELECT * FROM TRADEDBADM.WTAORDLT t
+      WHERE TO_DATE(t.ord_dt, 'YYYYMMDD') >= TO_DATE('{start_date}','YYYYMMDD')
+      AND TO_DATE(t.ord_dt, 'YYYYMMDD') <= TO_DATE('{end_date}', 'YYYYMMDD')
+      AND ROWNUM <= 100000
+
