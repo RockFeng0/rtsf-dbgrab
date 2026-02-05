@@ -35,6 +35,7 @@ class DataExtractor(object):
 
         else:
             extractor = SqlExtractor(self._engine, fp)
+            setattr(extractor, "to_csv_enhance", extractor.to_csv)
 
         return extractor
 
@@ -52,7 +53,7 @@ class DataExtractor(object):
                         "chunk_size": chunk_size,
                         "max_lines": count,
                     }
-                    if "oracle:" in str(self._engine ) or "oceanbase:" in str(self._engine ):
+                    if "postgresql:" not in str(self._engine ):
                         db_kwargs.pop("max_lines")
 
                     _extractor.set_file(file_name).to_csv_enhance(*db_args, **db_kwargs)
