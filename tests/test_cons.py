@@ -16,8 +16,8 @@ def test_jaydebe_config():
     print("加载配置文件...")
 
     generator = ConfigGenerator()
-    generator.get_sql_template(sql_file)
-    generator.get_env_template(env_file)
+    generator.gen_sql_template(sql_file)
+    generator.gen_env_template(env_file)
 
     j_conf = JayDeBeConfig(env_file=env_file, sql_file=sql_file)
     print(f"SQL配置： {j_conf.sql_config}")

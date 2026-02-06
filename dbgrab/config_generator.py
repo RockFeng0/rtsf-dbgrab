@@ -36,9 +36,9 @@ class ConfigGenerator:
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(template_content)
 
-    def get_sql_template(self, output_path: str = None) -> None:
+    def gen_sql_template(self, output_path: str = None) -> None:
         self.get_template('tables.yml', output_path)
 
-    def get_env_template(self, output_path: str = None) -> None:
+    def gen_env_template(self, output_path: str = None) -> None:
         self.get_template('.env.example', output_path)
 
