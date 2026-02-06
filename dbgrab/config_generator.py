@@ -36,18 +36,9 @@ class ConfigGenerator:
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(template_content)
 
-    def get_tables_template(self, output_path: str = None) -> None:
-        """
-        获取tables.yaml模板并保存到当前目录
-
-        Args:
-            output_path: 输出文件路径，如果为None则保存到当前目录
-        """
+    def get_sql_template(self, output_path: str = None) -> None:
         self.get_template('tables.yml', output_path)
 
-if __name__ == '__main__':
-    # 初始化配置生成器
-    generator = ConfigGenerator()
+    def get_env_template(self, output_path: str = None) -> None:
+        self.get_template('.env.example', output_path)
 
-    # 获取tables.yaml模板到当前目录
-    generator.get_tables_template("../temp/dev_tables.yml")
