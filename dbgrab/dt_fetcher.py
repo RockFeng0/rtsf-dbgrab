@@ -38,7 +38,6 @@ class DataBaseFetcher(object):
         # SQL配置
         self._sql = self._jdbc.sql_config
 
-
     def with_engine(self, db_alias: str = None, ):
         """
         :param db_alias: 数据库标识/别名，从配置文件中获取，区分大小写，如: MAIN、REPLICA、USER
