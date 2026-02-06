@@ -18,27 +18,36 @@ class DataBaseFetcher(object):
     """
     数据库数据抓取器，基于数据库提取器和SQL模板文件抓取数据，并保存到csv
     """
+    def __init__(self, env_file: str = ".env", sql_file: str = "sql.yml", chunk_size: int = 200000, is_iter: bool = False):
+        """
+           :param env_file: env 文件配置
+           :param sql_file: sql 文件配置
+           :param chunk_size: 数据抽取的批次大小，默认200000
+           :param is_iter: 是否以迭代器模式抽取数据，默认False， 该参数已失效
+           :return:
+           """
+        self._env_file = env_file
+        self._sql_file = sql_file
 
-    def __init__(self, db_alias=None, chunk_size=200000, is_iter=False):
+        self._chunk_size = chunk_size
+        self._is_iter = is_iter
+
+        # JayDeBeConfig实例对象
+        self._jdbc = JayDeBeConfig(env_file, sql_file)
+
+        # SQL配置
+        self._sql = self._jdbc.sql_config
+
+
+    def with_engine(self, db_alias: str = None, ):
         """
         :param db_alias: 数据库标识/别名，从配置文件中获取，区分大小写，如: MAIN、REPLICA、USER
         :param chunk_size: 数据抽取的批次大小，默认200000
         :param is_iter: 是否以迭代器模式抽取数据，默认False， 该参数已失效
         :return:
         """
-        self._db_alias = db_alias
-        self._chunk_size = chunk_size
-        self._is_iter = is_iter
-
-
-    def with_config(self, env_file=".env", sql_file="sql.yml"):
-        self._jdbc = JayDeBeConfig(env_file, sql_file)
-
         # 获取引擎
-        self._engine = self._jdbc.manager.get_engine(self._db_alias)
-
-        # 获取SQL
-        self._sql = self._jdbc.sql_config
+        self._engine = self._jdbc.manager.get_engine(db_alias)
 
         # 初始化抽取/提取器对象
         self._dt_extractor = DataExtractor(self._engine, self._jdbc.db_config.FILE_PATH)
