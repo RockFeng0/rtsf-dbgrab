@@ -19,6 +19,9 @@ DB Grab SDK 是一个用于内部数据源 的 SQL 数据获取/采集的工具�
 # 从源码安装
 pip install -e .
 
+# pypi 安装
+pip install rtsf-dbgrab
+
 ```
 
 tips: 安装java jdk，设置JAVA_HOME, 以便采集 oceanbase 数据库
