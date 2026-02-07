@@ -28,7 +28,7 @@ class JayDeBeConfig(object):
             sql_file (str, optional): SQL模板配置文件路径. 默认值为 'tables.yml'.
         """
         self.sql_config = FileUtils.load_file(sql_file)
-        logger.info(f"Load SQL template: {self.sql_config['tables'].keys()}")
+        logger.info(f"SQL Tables List: {self.sql_config['tables'].keys()}")
 
     def _init_engine_manager(self, env_file):
         """ 初始化数据库引擎管理器
@@ -41,6 +41,6 @@ class JayDeBeConfig(object):
 
         # 打印引擎信息
         engines = self.manager.list_engines()
-        logger.info(f"Init engines: {engines.keys()}")
+        logger.info(f"Engines List: {engines.keys()}")
 
 

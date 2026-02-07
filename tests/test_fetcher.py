@@ -14,7 +14,7 @@ def test_grab_mysql():
     log.to_file(log_file)
     print("log: %s" % log_file)
 
-    dbf = DataBaseFetcher("CREDIBLE").with_config(env_file, sql_file)  # oracle
+    dbf = DataBaseFetcher(env_file, sql_file).with_engine("CREDIBLE")  # oracle
 
     # T+1
     print(dbf.to_csv(table_name='credible_db.fetcher_task_record', T_1=True))
@@ -33,7 +33,7 @@ def test_grab_oceanbase():
     log.to_file(log_file)
     print("log: %s" % log_file)
 
-    dbf = DataBaseFetcher("TRADE").with_config(env_file, sql_file) # oceanbase
+    dbf = DataBaseFetcher(env_file, sql_file).with_engine("TRADE")  # oceanbase
 
     # T+1
     print(dbf.to_csv(table_name='TRADEDBADM.WTAORDLT', T_1=True))
